@@ -3,100 +3,126 @@ const {readFileSync} = require('fs');
 
 const uuidBuffer = require('uuid-buffer');
 const {
-    AudioFoundResult,
-    AudioNotFoundResult,
-    ThrottledUidResult,
-    ValidUidResult,
+  AudioFoundResult,
+  AudioNotFoundResult,
+  ThrottledUidResult,
+  ValidUidResult,
+  UnknownUidResult
 } = require('bloop-server');
 
 const db = require("./models");
+
+const axios = require('axios');
 
 //db.sequelize.sync();
 
 const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
-    authenticate(clientId, secret) {
-        return secret === 'bar';
+  authenticate(clientId, secret) {
+    return secret === 'bar';
+  }
+
+  async checkUid(clientId, uid) {
+    const hexUid = uid.toString('hex');
+    let user = await db.User.findOne({ where: { uid: hexUid } });
+    //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
+    console.log(user);
+    if (user === null){
+        
+      try{
+        const newUser = await axios.post(
+          "https://graze-api.scotiacon.org.uk/export/api/0.1/badge-lookup", 
+          {
+            access_key: "vBbY4q~Uo6)XYFx:jJI5kB&l$g}WJwA3}Y6'N`+4?nK<Yd*?qP{Ogvj85wQ:L4i", 
+            serial_number: "a1:b2:c3:d4:e5:f5:06:17"
+          }
+        )
+        user = await db.User.create({uid: hexUid, username: "", cardId: 0});
+      } catch (error) {
+        console.log(error);
+        return new UnknownUidResult();
+      }
+    }
+    const [box, created] = await db.Box.findOrCreate({ where: { name: clientId } });
+
+    console.log(user);
+    
+    const lastScan = await db.Bloop.max("updatedAt", { where: { UserId: user.id } });
+
+    if (Date.now() - lastScan < 5000) {    
+      return new ThrottledUidResult();
     }
 
-    async checkUid(clientId, uid) {
-        const hexUid = uid.toString('hex');
-        const [user, created] = await db.User.findOrCreate({ where: { uid: hexUid }, defaults: {username: "Shuttleu"} });
-        const [box, created2] = await db.Box.findOrCreate({ where: { name: clientId } });
-        
-        const lastScan = await db.Bloop.max("updatedAt", { where: { UserId: user.id } });
+    const achievements = [];
+    
+    console.log("cwe");
 
-        if (Date.now() - lastScan < 5000) {    
-            return new ThrottledUidResult();
+    console.log(user);
+    console.log(box);
+    await user.createBloop({ BoxId: box.id });
+    console.log("dwe");
+    checkAchievements.forEach((checkAchievement) => {
+      achievements.push(checkAchievement(user));
+    })
+
+    return Promise.allSettled(achievements).then(async (results) => {
+
+      console.log("new_achievements");
+      console.log(results);
+      const new_achievements = [];
+      for (const [index, achievement] of results.entries()) {
+        const gained = await user.hasAchievement(index + 1);
+        console.log(gained);
+        if (!gained && achievement.value) {
+          await user.addAchievement(index + 1);
+          const new_achievement = await db.Achievement.findByPk(index + 1);
+          new_achievements.push(new_achievement);
         }
+      };
 
-        const achievements = [];
-        
-        console.log("cwe");
+      console.log("new_achievements");
+      console.log(new_achievements);
 
-        console.log(user);
-        console.log(box);
-        await user.createBloop({ BoxId: box.id });
-        console.log("dwe");
-        checkAchievements.forEach((checkAchievement) => {
-            achievements.push(checkAchievement(user));
-        })
+      const achievements_fulfilled = [];
 
-        return Promise.allSettled(achievements).then((results) => {
-
-            const new_achievements = [];
-            results.forEach((achievement, index) => {
-                const gained = user.hasAchievement(index+1);
-                if (!gained && achievement.value) {
-                    user.addAchievement(index+1);
-                    const new_achievement = db.Achievement.findByPk(index+1);
-                    new_achievements.push(new_achievement);
-                }
-            });
-    
-            console.log("new_achievements");
-            console.log(new_achievements);
-    
-            const achievements_fulfilled = [];
-    
-            return Promise.allSettled(new_achievements).then((results) => {
-                results.forEach((result) => {
-                    achievements_fulfilled.push(uuidBuffer.toBuffer(result.value.uuid))
-                });
-                return new ValidUidResult(achievements_fulfilled); 
-            });
+      return Promise.allSettled(new_achievements).then((results) => {
+        results.forEach((result) => {
+          achievements_fulfilled.push(uuidBuffer.toBuffer(result.value.uuid))
         });
+        return new ValidUidResult(achievements_fulfilled); 
+      });
+    });
+  }
+
+  async getAudio(id) {
+    const hexId = id.toString('hex');
+
+    if (hexId === '0000000000000000000000000000000000000001') {
+      // Return MP3 audio data.
+      return new AudioFoundResult(Buffer.alloc(50));
     }
 
-    async getAudio(id) {
-        const hexId = id.toString('hex');
-
-        if (hexId === '0000000000000000000000000000000000000001') {
-            // Return MP3 audio data.
-            return new AudioFoundResult(Buffer.alloc(50));
-        }
-
-        return new AudioNotFoundResult();
-    }
+    return new AudioNotFoundResult();
+  }
 }
 
 const processor = new MyProcessor();
 const {server, closeOpenConnections} = startServer({
-    processor,
+  processor,
 
-    tls: {
-        key: readFileSync(`test.key`),
-        cert: readFileSync(`test.crt`),
-    },
-    port: 12345,
+  tls: {
+    key: readFileSync(`test.key`),
+    cert: readFileSync(`test.crt`),
+  },
+  port: 12345,
 });
 
 
 // This takes care of gracefully shutting down the server on CTRL+C
 process.on('SIGINT', () => {
-    closeOpenConnections();
-    server.close(() => {
-        process.exit(0);
-    });
+  closeOpenConnections();
+  server.close(() => {
+    process.exit(0);
+  });
 });
