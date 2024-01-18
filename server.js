@@ -34,8 +34,8 @@ class MyProcessor {
         const newUser = await axios.post(
           "https://graze-api.scotiacon.org.uk/export/api/0.1/badge-lookup", 
           {
-            access_key: "vBbY4q~Uo6)XYFx:jJI5kB&l$g}WJwA3}Y6'N`+4?nK<Yd*?qP{Ogvj85wQ:L4i", 
-            serial_number: "a1:b2:c3:d4:e5:f5:06:17"
+            access_key: "", 
+            serial_number: ""
           }
         )
         user = await db.User.create({uid: hexUid, username: "", cardId: 0});
