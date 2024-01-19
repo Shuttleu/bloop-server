@@ -1,9 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-
   class Bloop extends Model {
     /**
      * Helper method for defining associations.
@@ -15,15 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  Bloop.init({
-  }, {
-    sequelize,
-    modelName: 'Bloop',
-  });
+  Bloop.init(
+    {},
+    {
+      sequelize,
+      modelName: "Bloop",
+    },
+  );
 
-  Bloop.associate = models => {
-    Bloop.belongsTo(models.User );
-    Bloop.belongsTo(models.Box );
+  Bloop.associate = (models) => {
+    Bloop.belongsTo(models.User);
+    Bloop.belongsTo(models.Box);
   };
 
   return Bloop;

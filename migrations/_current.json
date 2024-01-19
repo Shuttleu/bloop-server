@@ -1,189 +1,189 @@
 {
-    "tables": {
-        "Achievements": {
-            "tableName": "Achievements",
-            "schema": {
-                "id": {
-                    "allowNull": false,
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "name": {
-                    "field": "name",
-                    "seqType": "Sequelize.STRING"
-                },
-                "desc": {
-                    "field": "desc",
-                    "seqType": "Sequelize.STRING"
-                },
-                "points": {
-                    "field": "points",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "uuid": {
-                    "field": "uuid",
-                    "seqType": "Sequelize.UUID"
-                },
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                }
-            },
-            "indexes": []
+  "tables": {
+    "Achievements": {
+      "tableName": "Achievements",
+      "schema": {
+        "id": {
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true,
+          "field": "id",
+          "seqType": "Sequelize.INTEGER"
         },
-        "Bloops": {
-            "tableName": "Bloops",
-            "schema": {
-                "id": {
-                    "allowNull": false,
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "UserId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "Users",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "UserId",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "BoxId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "Boxes",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "field": "BoxId",
-                    "seqType": "Sequelize.INTEGER"
-                }
-            },
-            "indexes": []
+        "name": {
+          "field": "name",
+          "seqType": "Sequelize.STRING"
         },
-        "Boxes": {
-            "tableName": "Boxes",
-            "schema": {
-                "id": {
-                    "allowNull": false,
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "name": {
-                    "field": "name",
-                    "seqType": "Sequelize.STRING"
-                },
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                }
-            },
-            "indexes": []
+        "desc": {
+          "field": "desc",
+          "seqType": "Sequelize.STRING"
         },
-        "Users": {
-            "tableName": "Users",
-            "schema": {
-                "id": {
-                    "allowNull": false,
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "id",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "username": {
-                    "field": "username",
-                    "seqType": "Sequelize.STRING"
-                },
-                "uid": {
-                    "field": "uid",
-                    "seqType": "Sequelize.STRING"
-                },
-                "cardId": {
-                    "field": "cardId",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                }
-            },
-            "indexes": []
+        "points": {
+          "field": "points",
+          "seqType": "Sequelize.INTEGER"
         },
-        "UserAchievements": {
-            "tableName": "UserAchievements",
-            "schema": {
-                "createdAt": {
-                    "allowNull": false,
-                    "field": "createdAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "updatedAt": {
-                    "allowNull": false,
-                    "field": "updatedAt",
-                    "seqType": "Sequelize.DATE"
-                },
-                "AchievementId": {
-                    "primaryKey": true,
-                    "references": {
-                        "model": "Achievements",
-                        "key": "id"
-                    },
-                    "onDelete": "CASCADE",
-                    "onUpdate": "CASCADE",
-                    "field": "AchievementId",
-                    "seqType": "Sequelize.INTEGER"
-                },
-                "UserId": {
-                    "primaryKey": true,
-                    "references": {
-                        "model": "Users",
-                        "key": "id"
-                    },
-                    "onDelete": "CASCADE",
-                    "onUpdate": "CASCADE",
-                    "field": "UserId",
-                    "seqType": "Sequelize.INTEGER"
-                }
-            },
-            "indexes": []
+        "uuid": {
+          "field": "uuid",
+          "seqType": "Sequelize.UUID"
+        },
+        "createdAt": {
+          "allowNull": false,
+          "field": "createdAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "updatedAt": {
+          "allowNull": false,
+          "field": "updatedAt",
+          "seqType": "Sequelize.DATE"
         }
+      },
+      "indexes": []
     },
-    "revision": 1
+    "Bloops": {
+      "tableName": "Bloops",
+      "schema": {
+        "id": {
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true,
+          "field": "id",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "createdAt": {
+          "allowNull": false,
+          "field": "createdAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "updatedAt": {
+          "allowNull": false,
+          "field": "updatedAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "UserId": {
+          "allowNull": true,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          },
+          "onDelete": "SET NULL",
+          "onUpdate": "CASCADE",
+          "field": "UserId",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "BoxId": {
+          "allowNull": true,
+          "references": {
+            "model": "Boxes",
+            "key": "id"
+          },
+          "onDelete": "SET NULL",
+          "onUpdate": "CASCADE",
+          "field": "BoxId",
+          "seqType": "Sequelize.INTEGER"
+        }
+      },
+      "indexes": []
+    },
+    "Boxes": {
+      "tableName": "Boxes",
+      "schema": {
+        "id": {
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true,
+          "field": "id",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "name": {
+          "field": "name",
+          "seqType": "Sequelize.STRING"
+        },
+        "createdAt": {
+          "allowNull": false,
+          "field": "createdAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "updatedAt": {
+          "allowNull": false,
+          "field": "updatedAt",
+          "seqType": "Sequelize.DATE"
+        }
+      },
+      "indexes": []
+    },
+    "Users": {
+      "tableName": "Users",
+      "schema": {
+        "id": {
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true,
+          "field": "id",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "username": {
+          "field": "username",
+          "seqType": "Sequelize.STRING"
+        },
+        "uid": {
+          "field": "uid",
+          "seqType": "Sequelize.STRING"
+        },
+        "cardId": {
+          "field": "cardId",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "createdAt": {
+          "allowNull": false,
+          "field": "createdAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "updatedAt": {
+          "allowNull": false,
+          "field": "updatedAt",
+          "seqType": "Sequelize.DATE"
+        }
+      },
+      "indexes": []
+    },
+    "UserAchievements": {
+      "tableName": "UserAchievements",
+      "schema": {
+        "createdAt": {
+          "allowNull": false,
+          "field": "createdAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "updatedAt": {
+          "allowNull": false,
+          "field": "updatedAt",
+          "seqType": "Sequelize.DATE"
+        },
+        "AchievementId": {
+          "primaryKey": true,
+          "references": {
+            "model": "Achievements",
+            "key": "id"
+          },
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE",
+          "field": "AchievementId",
+          "seqType": "Sequelize.INTEGER"
+        },
+        "UserId": {
+          "primaryKey": true,
+          "references": {
+            "model": "Users",
+            "key": "id"
+          },
+          "onDelete": "CASCADE",
+          "onUpdate": "CASCADE",
+          "field": "UserId",
+          "seqType": "Sequelize.INTEGER"
+        }
+      },
+      "indexes": []
+    }
+  },
+  "revision": 1
 }

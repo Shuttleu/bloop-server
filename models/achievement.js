@@ -1,9 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-
   class Achievement extends Model {
     /**
      * Helper method for defining associations.
@@ -15,18 +12,22 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  Achievement.init({
-    name: DataTypes.STRING,
-    desc: DataTypes.STRING,
-    points: DataTypes.INTEGER,
-    uuid: DataTypes.UUID
-  }, {
-    sequelize,
-    modelName: 'Achievement',
-  });
+  Achievement.init(
+    {
+      name: DataTypes.STRING,
+      desc: DataTypes.STRING,
+      points: DataTypes.INTEGER,
+      uuid: DataTypes.UUID,
+      hidden: DataTypes.BOOLEAN,
+    },
+    {
+      sequelize,
+      modelName: "Achievement",
+    },
+  );
 
-  Achievement.associate = models => {
-    Achievement.belongsToMany(models.User, { through: 'UserAchievements'} );
+  Achievement.associate = (models) => {
+    Achievement.belongsToMany(models.User, { through: "UserAchievements" });
   };
 
   return Achievement;

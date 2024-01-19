@@ -1,18 +1,18 @@
-const {startServer} = require('bloop-server');
-const {readFileSync} = require('fs');
+const { startServer } = require("bloop-server");
+const { readFileSync } = require("fs");
 
-const uuidBuffer = require('uuid-buffer');
+const uuidBuffer = require("uuid-buffer");
 const {
   AudioFoundResult,
   AudioNotFoundResult,
   ThrottledUidResult,
   ValidUidResult,
-  UnknownUidResult
-} = require('bloop-server');
+  UnknownUidResult,
+} = require("bloop-server");
 
 const db = require("./models");
 
-const axios = require('axios');
+const axios = require("axios");
 
 //db.sequelize.sync();
 
@@ -20,42 +20,49 @@ const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
   authenticate(clientId, secret) {
-    return secret === 'bar';
+    return secret === "bar";
   }
 
   async checkUid(clientId, uid) {
-    const hexUid = uid.toString('hex');
+    const hexUid = uid.toString("hex");
     let user = await db.User.findOne({ where: { uid: hexUid } });
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
     console.log(user);
-    if (user === null){
-        
-      try{
+    if (user === null) {
+      try {
         const newUser = await axios.post(
-          "https://graze-api.scotiacon.org.uk/export/api/0.1/badge-lookup", 
+          "https://graze-api.scotiacon.org.uk/export/api/0.1/badge-lookup",
           {
-            access_key: "", 
-            serial_number: ""
-          }
-        )
-        user = await db.User.create({uid: hexUid, username: "", cardId: 0});
+            access_key: "",
+            serial_number: "",
+          },
+        );
+        user = await db.User.create({
+          uid: hexUid,
+          username: newUser.display_name,
+          cardId: newUser.badge_id,
+        });
       } catch (error) {
         console.log(error);
         return new UnknownUidResult();
       }
     }
-    const [box, created] = await db.Box.findOrCreate({ where: { name: clientId } });
+    const [box, created] = await db.Box.findOrCreate({
+      where: { name: clientId },
+    });
 
     console.log(user);
-    
-    const lastScan = await db.Bloop.max("updatedAt", { where: { UserId: user.id } });
 
-    if (Date.now() - lastScan < 5000) {    
+    const lastScan = await db.Bloop.max("updatedAt", {
+      where: { UserId: user.id },
+    });
+
+    if (Date.now() - lastScan < 5000) {
       return new ThrottledUidResult();
     }
 
     const achievements = [];
-    
+
     console.log("cwe");
 
     console.log(user);
@@ -64,10 +71,9 @@ class MyProcessor {
     console.log("dwe");
     checkAchievements.forEach((checkAchievement) => {
       achievements.push(checkAchievement(user));
-    })
+    });
 
     return Promise.allSettled(achievements).then(async (results) => {
-
       console.log("new_achievements");
       console.log(results);
       const new_achievements = [];
@@ -79,7 +85,7 @@ class MyProcessor {
           const new_achievement = await db.Achievement.findByPk(index + 1);
           new_achievements.push(new_achievement);
         }
-      };
+      }
 
       console.log("new_achievements");
       console.log(new_achievements);
@@ -88,17 +94,17 @@ class MyProcessor {
 
       return Promise.allSettled(new_achievements).then((results) => {
         results.forEach((result) => {
-          achievements_fulfilled.push(uuidBuffer.toBuffer(result.value.uuid))
+          achievements_fulfilled.push(uuidBuffer.toBuffer(result.value.uuid));
         });
-        return new ValidUidResult(achievements_fulfilled); 
+        return new ValidUidResult(achievements_fulfilled);
       });
     });
   }
 
   async getAudio(id) {
-    const hexId = id.toString('hex');
+    const hexId = id.toString("hex");
 
-    if (hexId === '0000000000000000000000000000000000000001') {
+    if (hexId === "0000000000000000000000000000000000000001") {
       // Return MP3 audio data.
       return new AudioFoundResult(Buffer.alloc(50));
     }
@@ -108,7 +114,7 @@ class MyProcessor {
 }
 
 const processor = new MyProcessor();
-const {server, closeOpenConnections} = startServer({
+const { server, closeOpenConnections } = startServer({
   processor,
 
   tls: {
@@ -118,9 +124,8 @@ const {server, closeOpenConnections} = startServer({
   port: 12345,
 });
 
-
 // This takes care of gracefully shutting down the server on CTRL+C
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   closeOpenConnections();
   server.close(() => {
     process.exit(0);

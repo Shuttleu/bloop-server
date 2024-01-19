@@ -1,9 +1,6 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-
   class Box extends Model {
     /**
      * Helper method for defining associations.
@@ -15,14 +12,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
 
-  Box.init({
-    name: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Box',
-  });
+  Box.init(
+    {
+      name: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "Box",
+    },
+  );
 
-  Box.associate = models => {
+  Box.associate = (models) => {
     Box.hasMany(models.Bloop);
   };
 
