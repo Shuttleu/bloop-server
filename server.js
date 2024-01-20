@@ -14,8 +14,6 @@ const db = require("./models");
 
 const axios = require("axios");
 
-//db.sequelize.sync();
-
 const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
@@ -62,11 +60,6 @@ class MyProcessor {
     }
 
     const achievements = [];
-
-    console.log("cwe");
-
-    console.log(user);
-    console.log(box);
     await user.createBloop({ BoxId: box.id });
     console.log("dwe");
     checkAchievements.forEach((checkAchievement) => {
@@ -86,9 +79,6 @@ class MyProcessor {
           new_achievements.push(new_achievement);
         }
       }
-
-      console.log("new_achievements");
-      console.log(new_achievements);
 
       const achievements_fulfilled = [];
 
