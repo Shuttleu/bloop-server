@@ -29,13 +29,10 @@ class MyProcessor {
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
     if (user === null) {
       try {
-        const newUser = await axios.post(
-          process.env.BADGE_API_URL,
-          {
-            access_key: "",
-            serial_number: "",
-          },
-        );
+        const newUser = await axios.post(process.env.BADGE_API_URL, {
+          access_key: "",
+          serial_number: "",
+        });
         user = await db.User.create({
           uid: hexUid,
           username: newUser.display_name,
@@ -67,7 +64,7 @@ class MyProcessor {
       order: [["createdAt", "DESC"]],
       limit: 100,
     });
-  
+
     const previousBloops = db.Bloop.findAll({
       where: { id: { [Op.lte]: userBloops[0].id }, BoxId: userBloops[0].BoxId },
       order: [["createdAt", "DESC"]],
@@ -76,9 +73,24 @@ class MyProcessor {
       include: ["User"],
     });
 
-    return Promise.allSettled([boxCount, allBoxes, userBloopCount, userBloops, previousBloops]).then(async (results) => {
+    return Promise.allSettled([
+      boxCount,
+      allBoxes,
+      userBloopCount,
+      userBloops,
+      previousBloops,
+    ]).then(async (results) => {
       checkAchievements.forEach((checkAchievement) => {
-        achievements.push(checkAchievement(user, results[0].value, results[1].value, results[2].value, results[3].value, results[4].value));
+        achievements.push(
+          checkAchievement(
+            user,
+            results[0].value,
+            results[1].value,
+            results[2].value,
+            results[3].value,
+            results[4].value,
+          ),
+        );
       });
 
       return Promise.allSettled(achievements).then(async (results) => {
@@ -87,10 +99,10 @@ class MyProcessor {
         const newAchievements = [];
         const currentAchievements = await user.getAchievements();
         for (const [index, achievement] of results.entries()) {
-          let gained = false
-          currentAchievements.forEach(existingAchievement => {
-            if (existingAchievement.id == index+1) gained = true;
-          })
+          let gained = false;
+          currentAchievements.forEach((existingAchievement) => {
+            if (existingAchievement.id == index + 1) gained = true;
+          });
           console.log(gained);
           if (!gained && achievement.value) {
             await user.addAchievement(index + 1);
