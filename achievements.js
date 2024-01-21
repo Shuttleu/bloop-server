@@ -2,48 +2,34 @@ const db = require("./models");
 
 const { Op } = require("sequelize");
 
-async function alphabetically(user) {
-  const count = await db.Box.count();
-  const boxes = await db.Box.findAll({ order: [["name", "DESC"]] });
-  const bloops = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: count,
-  });
-  let alphabetical = true;
-  bloops.forEach((bloop, index) => {
-    if (bloop.BoxId != boxes[index].id) alphabetical = false;
-  });
+async function alphabetically(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const boxes = allBoxes;
+  const bloops = userBloops;
+  let alphabetical = boxCount <= userBloopCount;
+
+  if (alphabetical) {
+    boxes.forEach((box, index) => {
+      if (box.id != bloops[index].BoxId) alphabetical = false;
+    });
+  }
   return alphabetical;
 }
-async function avidReader(user) {
+async function avidReader(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
   return false;
 }
-async function hiddenTrail(user) {
+async function hiddenTrail(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
   return false;
 }
-async function digitSum(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-    include: ["User"],
-  });
-  console.log("User");
-  console.log(lastBloop[0].User);
-  const previousBloop = await db.Bloop.findAll({
-    where: { id: { [Op.lte]: lastBloop[0].id }, BoxId: lastBloop[0].BoxId },
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-    offset: 1,
-    include: ["User"],
-  });
+async function digitSum(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const previousBloop = previousBloops[0];
 
-  if (lastBloop[0].User.cardId == previousBloop[0].User.cardId) {
+  if (user.cardId == previousBloop.User.cardId) {
     return false;
   }
 
-  let lastId = lastBloop[0].User.cardId;
+  let lastId = user.cardId;
   let lastSum = 0;
-  let previousId = previousBloop[0].User.cardId;
+  let previousId = previousBloop.User.cardId;
   let previousSum = 0;
 
   while (lastId) {
@@ -56,140 +42,138 @@ async function digitSum(user) {
   }
   return lastSum == previousSum;
 }
-async function eternalLove(user) {
+async function eternalLove(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
   return false;
 }
-async function fibonacci(user) {
+async function fibonacci(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastUser = previousBloops[0].User.cardId;
+  function isPerfectSquare(x)
+  {
+      let s = parseInt(Math.sqrt(x));
+      return (s * s == x);
+  }
+  return isPerfectSquare(5 * lastUser * lastUser + 4) || isPerfectSquare(5 * lastUser * lastUser - 4);
+  
+}
+async function finalCountdown(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
   return false;
 }
-async function finalCountdown(user) {
+async function numberBuddies(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const previousBloop = previousBloops[0];
+  const diferentPerson = user.id != previousBloop.User.id;
+  return diferentPerson && user.cardId.toString()[0] == previousBloops[0].User.cardId.toString()[0];
+}
+async function prime(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const previousCard = previousBloops[0].User.cardId;
+  for(let i = 2, s = Math.sqrt(previousCard); i <= s; i++) {
+    if(previousCard % i === 0) return false;
+  }
+  return previousCard > 1;
+}
+async function sos(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const pattern = [true, false, true];
+  for(let i = 0; i < 7; i++)
+    if (user.cardID != previousBloops[0].User.cardId || (previousBloops[i].User.cardId == previousBloops[i+1].User.cardId) != pattern[i%3])
+      return false;
+  return true;
+}
+async function milestone100(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 100;
+}
+async function milestone500(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 500;
+}
+async function milestone1000(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 1000;
+}
+async function milestone2000(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 2000;
+}
+async function milestone3000(usboxCount, allBoxes, userBloopCount, userBloops, previousBloopser) {
+  return userBloopCount == 3000;
+}
+async function milestone4000(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 4000;
+}
+async function milestone5000(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 5000;
+}
+async function firstBork(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  return userBloopCount == 1;
+}
+async function maniac(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  if (userBloopCount < 100) return false;
+  const usersOldBloop = userBloops[99];
+  return Date.now() - usersOldBloop.createdAt < 600000;
+}
+async function rapidFire(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  if (userBloopCount < 30) return false;
+  const usersOldBloop = userBloops[29];
+  return Date.now() - usersOldBloop.createdAt < 120000;
+}
+async function relayRace(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
+  const secondLastBloop = userBloops[1];
+  const thirdLastBloop = userBloops[2];
+  if (lastBloop.BoxId != secondLastBloop.BoxId && secondLastBloop.BoxId != thirdLastBloop.BoxId)
+    return Date.now() - thirdLastBloop.createdAt < 60000;
   return false;
 }
-async function numberBuddies(user) {
-  return false;
-}
-async function prime(user) {
-  return false;
-}
-async function sos(user) {
-  return false;
-}
-async function milestone100(user) {
-  return (await user.countBloops()) == 100;
-}
-async function milestone500(user) {
-  return (await user.countBloops()) == 500;
-}
-async function milestone1000(user) {
-  return (await user.countBloops()) == 1000;
-}
-async function milestone2000(user) {
-  return (await user.countBloops()) == 2000;
-}
-async function milestone3000(user) {
-  return (await user.countBloops()) == 3000;
-}
-async function milestone4000(user) {
-  return (await user.countBloops()) == 4000;
-}
-async function milestone5000(user) {
-  return (await user.countBloops()) == 5000;
-}
-async function firstBork(user) {
-  const bloops = await user.countBloops();
-  console.log(bloops);
-  return bloops == 1;
-}
-async function maniac(user) {
-  return false;
-}
-async function rapidFire(user) {
-  return false;
-}
-async function relayRace(user) {
-  return false;
-}
-async function earlyBird(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function earlyBird(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
   return (
-    lastBloop[0].createdAt.getHours() > 4 &&
-    lastBloop[0].createdAt.getHours() < 7
+    lastBloop.createdAt.getHours() > 4 &&
+    lastBloop.createdAt.getHours() < 7
   );
 }
-async function firstBloopOfTheHour(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
-  const previousBloop = await db.Bloop.findAll({
-    where: { id: { [Op.lte]: lastBloop[0].id }, BoxId: lastBloop[0].BoxId },
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-    offset: 1,
-  });
+async function firstBloopOfTheHour(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
+  const previousBloop = previousBloops[0];
 
   return (
-    lastBloop[0].createdAt.getHours() != previousBloop[0].createdAt.getHours()
+    lastBloop.createdAt.getHours() != previousBloop.createdAt.getHours()
   );
 }
-async function highNoon(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function highNoon(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
   return (
-    lastBloop[0].createdAt.getHours() == 12 &&
-    lastBloop[0].createdAt.getMinutes() == 0
+    lastBloop.createdAt.getHours() == 12 &&
+    lastBloop.createdAt.getMinutes() == 0
   );
 }
-async function leet(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function leet(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
   return (
-    lastBloop[0].createdAt.getHours() == 13 &&
-    lastBloop[0].createdAt.getMinutes() == 37
+    lastBloop.createdAt.getHours() == 13 &&
+    lastBloop.createdAt.getMinutes() == 37
   );
 }
-async function nightOwl(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function nightOwl(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
   return (
-    lastBloop[0].createdAt.getHours() > 23 ||
-    lastBloop[0].createdAt.getHours() < 3
+    lastBloop.createdAt.getHours() > 23 ||
+    lastBloop.createdAt.getHours() < 3
   );
 }
-async function e621(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function e621(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
   return (
-    (lastBloop[0].createdAt.getHours() == 6 ||
-      lastBloop[0].createdAt.getHours() == 18) &&
-    lastBloop[0].createdAt.getMinutes() == 21
+    (lastBloop.createdAt.getHours() == 6 ||
+      lastBloop.createdAt.getHours() == 18) &&
+    lastBloop.createdAt.getMinutes() == 21
   );
 }
-async function witchingHour(user) {
-  const lastBloop = await user.getBloops({
-    order: [["createdAt", "DESC"]],
-    limit: 1,
-  });
+async function witchingHour(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
+  const lastBloop = userBloops[0];
 
-  return lastBloop[0].createdAt.getHours() == 0;
+  return lastBloop.createdAt.getHours() == 0;
 }
-async function bugHunter(user) {
+async function bugHunter(user, boxCount, allBoxes, userBloopCount, userBloops, previousBloops) {
   return false;
 }
 
@@ -211,6 +195,13 @@ const checkAchievements = [
   nightOwl,
   e621,
   witchingHour,
+  numberBuddies,
+  prime,
+  maniac,
+  rapidFire,
+  relayRace,
+  sos,
+  fibonacci,
 ];
 
 module.exports = checkAchievements;

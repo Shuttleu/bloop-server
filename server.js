@@ -14,6 +14,8 @@ const db = require("./models");
 
 const axios = require("axios");
 
+const { Op } = require("sequelize");
+
 const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
@@ -25,7 +27,6 @@ class MyProcessor {
     const hexUid = uid.toString("hex");
     let user = await db.User.findOne({ where: { uid: hexUid } });
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
-    console.log(user);
     if (user === null) {
       try {
         const newUser = await axios.post(
@@ -41,7 +42,6 @@ class MyProcessor {
           cardId: newUser.badge_id,
         });
       } catch (error) {
-        console.log(error);
         return new UnknownUidResult();
       }
     }
@@ -49,9 +49,7 @@ class MyProcessor {
       where: { name: clientId },
     });
 
-    console.log(user);
-
-    const lastScan = await db.Bloop.max("updatedAt", {
+    const lastScan = await db.Bloop.max("createdAt", {
       where: { UserId: user.id },
     });
 
@@ -61,32 +59,54 @@ class MyProcessor {
 
     const achievements = [];
     await user.createBloop({ BoxId: box.id });
-    console.log("dwe");
-    checkAchievements.forEach((checkAchievement) => {
-      achievements.push(checkAchievement(user));
+
+    const boxCount = db.Box.count();
+    const allBoxes = db.Box.findAll({ order: [["name", "DESC"]] });
+    const userBloopCount = user.countBloops();
+    const userBloops = await user.getBloops({
+      order: [["createdAt", "DESC"]],
+      limit: 100,
+    });
+  
+    const previousBloops = db.Bloop.findAll({
+      where: { id: { [Op.lte]: userBloops[0].id }, BoxId: userBloops[0].BoxId },
+      order: [["createdAt", "DESC"]],
+      limit: 10,
+      offset: 1,
+      include: ["User"],
     });
 
-    return Promise.allSettled(achievements).then(async (results) => {
-      console.log("new_achievements");
-      console.log(results);
-      const new_achievements = [];
-      for (const [index, achievement] of results.entries()) {
-        const gained = await user.hasAchievement(index + 1);
-        console.log(gained);
-        if (!gained && achievement.value) {
-          await user.addAchievement(index + 1);
-          const new_achievement = await db.Achievement.findByPk(index + 1);
-          new_achievements.push(new_achievement);
+    return Promise.allSettled([boxCount, allBoxes, userBloopCount, userBloops, previousBloops]).then(async (results) => {
+      checkAchievements.forEach((checkAchievement) => {
+        achievements.push(checkAchievement(user, results[0].value, results[1].value, results[2].value, results[3].value, results[4].value));
+      });
+
+      return Promise.allSettled(achievements).then(async (results) => {
+        console.log("new_achievements");
+        console.log(results);
+        const newAchievements = [];
+        const currentAchievements = await user.getAchievements();
+        for (const [index, achievement] of results.entries()) {
+          let gained = false
+          currentAchievements.forEach(existingAchievement => {
+            if (existingAchievement.id == index+1) gained = true;
+          })
+          console.log(gained);
+          if (!gained && achievement.value) {
+            await user.addAchievement(index + 1);
+            const new_achievement = await db.Achievement.findByPk(index + 1);
+            newAchievements.push(new_achievement);
+          }
         }
-      }
 
-      const achievements_fulfilled = [];
+        const achievementsFulfilled = [];
 
-      return Promise.allSettled(new_achievements).then((results) => {
-        results.forEach((result) => {
-          achievements_fulfilled.push(uuidBuffer.toBuffer(result.value.uuid));
+        return Promise.allSettled(newAchievements).then((results) => {
+          results.forEach((result) => {
+            achievementsFulfilled.push(uuidBuffer.toBuffer(result.value.uuid));
+          });
+          return new ValidUidResult(achievementsFulfilled);
         });
-        return new ValidUidResult(achievements_fulfilled);
       });
     });
   }
