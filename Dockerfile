@@ -5,4 +5,5 @@ ADD . .
 ENV NODE_ENV=production
 RUN npm install
 EXPOSE 12345
-CMD node server.js
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

@@ -6,14 +6,13 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.35.2",
     "sqlite3": "^5.1.7",
-    "uuid-buffer": "^1.0.3"
+    "uuid-buffer": "^1.0.3",
+    "sequelize-cli": "^6.6.2"
   },
   "scripts": {
     "db:makemigrations": "./node_modules/sequelize-auto-migrations/bin/makemigration.js"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.6.2",
-    "sequelize-auto-migrations": "github:scimonster/sequelize-auto-migrations#a063aa6535a3f580623581bf866cef2d609531ba",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "latest",
@@ -25,6 +24,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "latest"
+    "prettier": "latest",
+    "sequelize-auto-migrations": "github:scimonster/sequelize-auto-migrations#a063aa6535a3f580623581bf866cef2d609531ba"
   }
 }
