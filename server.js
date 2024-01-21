@@ -29,7 +29,7 @@ class MyProcessor {
     if (user === null) {
       try {
         const newUser = await axios.post(
-          "https://graze-api.scotiacon.org.uk/export/api/0.1/badge-lookup",
+          process.env.BADGE_API_URL,
           {
             access_key: "",
             serial_number: "",
