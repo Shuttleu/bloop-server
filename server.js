@@ -29,14 +29,17 @@ class MyProcessor {
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
     if (user === null) {
       try {
-        const newUser = await axios.post(process.env.BADGE_API_URL, {
-          access_key: "",
-          serial_number: "",
-        });
+        const newUser = await axios.post(
+          process.env.BADGE_API_URL,
+          {
+            access_key: process.env.BADGE_API_KEY,
+            serial_number: hexUid.match(/.{2}/g).join(":"),
+          },
+        );
         user = await db.User.create({
           uid: hexUid,
-          username: newUser.display_name,
-          cardId: newUser.badge_id,
+          username: newUser.data.display_name,
+          cardId: parseInt(newUser.data.badge_id),
         });
       } catch (error) {
         return new UnknownUidResult();
