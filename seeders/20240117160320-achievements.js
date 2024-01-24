@@ -382,6 +382,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "The Truth is Out There",
+        desc: "X Files refrence",
+        points: 2,
+        hidden: true,
+        uuid: "78c4ea70-afa2-47b6-99f9-66c15eaba16d",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
