@@ -340,6 +340,23 @@ async function highNoon(
   );
 }
 
+async function truth(
+  user,
+  boxCount,
+  allBoxes,
+  userBloopCount,
+  userBloops,
+  previousBloops,
+) {
+  const lastBloop = userBloops[0];
+
+  return (
+    (lastBloop.createdAt.getHours() == 11 ||
+      lastBloop.createdAt.getHours() == 23) &&
+    lastBloop.createdAt.getMinutes() == 21
+  );
+}
+
 async function leet(
   user,
   boxCount,
@@ -624,6 +641,7 @@ const checkAchievements = [
   peopleAzakir,
   peopleKisumi,
   peopleChairman,
+  truth,
 ];
 
 module.exports = checkAchievements;
