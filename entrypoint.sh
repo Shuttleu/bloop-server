@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ -n "${FIRST_RUN}" ]]; then
-  echo "FIRST_RUN set, running migrations..."
+if [[ -n "${RUN_MIGRATIONS}" ]]; then
+  echo "RUN_MIGRATIONS set, running migrations..."
   npx sequelize-cli db:migrate
   npx sequelize-cli db:seed:all
 fi
