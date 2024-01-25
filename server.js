@@ -20,7 +20,7 @@ const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
   authenticate(clientId, secret) {
-    return secret === "bar";
+    return secret === process.env.CLIENT_SECRET;
   }
 
   async checkUid(clientId, uid) {
