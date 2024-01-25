@@ -439,7 +439,7 @@ async function peopleRikRoll(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleJez(
@@ -452,7 +452,7 @@ async function peopleJez(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleSnowcone(
@@ -465,7 +465,7 @@ async function peopleSnowcone(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleSilver(
@@ -478,7 +478,7 @@ async function peopleSilver(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleFaith(
@@ -491,7 +491,7 @@ async function peopleFaith(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleTakk(
@@ -504,7 +504,7 @@ async function peopleTakk(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleGoh(
@@ -517,7 +517,7 @@ async function peopleGoh(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleCrew(
@@ -530,7 +530,7 @@ async function peopleCrew(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleEngineer(
@@ -543,7 +543,7 @@ async function peopleEngineer(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleFudgy(
@@ -556,7 +556,7 @@ async function peopleFudgy(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleAzakir(
@@ -569,7 +569,7 @@ async function peopleAzakir(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleKisumi(
@@ -582,7 +582,7 @@ async function peopleKisumi(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 async function peopleChairman(
@@ -595,7 +595,7 @@ async function peopleChairman(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username = "");
+  return (lastBloop.User.username == "");
 }
 
 const checkAchievements = [
