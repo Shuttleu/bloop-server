@@ -52,7 +52,7 @@ async function digitSum(
 ) {
   const previousBloop = previousBloops[0];
 
-  if (user.cardId == previousBloop.User.cardId) {
+  if (user.id == previousBloop.User.id) {
     return false;
   }
 
@@ -91,6 +91,8 @@ async function fibonacci(
   userBloops,
   previousBloops,
 ) {
+  if (user.id == previousBloops[0].User.id)
+   return false;
   const lastUser = previousBloops[0].User.cardId;
   function isPerfectSquare(x) {
     let s = parseInt(Math.sqrt(x));
@@ -110,7 +112,22 @@ async function finalCountdown(
   userBloops,
   previousBloops,
 ) {
-  return false;
+  console.log(user.cardId.toString()[0]);
+  if (user.cardId.toString()[0] != "1")
+    return false;
+
+  for (let i=7; i >= 0; i--){
+    console.log(`${i+2} = ${previousBloops[i].User.cardId.toString()[0]}`)
+    if (previousBloops[i].User.cardId.toString()[0] != (i+2).toString())
+      return false;
+  }
+
+  
+  for (let i=7; i >= 0 ; i--){
+    let achievementUser = await db.User.findByPk(previousBloops[i].User.id);
+    await achievementUser.addAchievement(28);
+  }
+  return true;
 }
 
 async function numberBuddies(
@@ -137,11 +154,13 @@ async function prime(
   userBloops,
   previousBloops,
 ) {
+  if (user.id == previousBloops[0].User.id)
+   return false;
   const previousCard = previousBloops[0].User.cardId;
   for (let i = 2, s = Math.sqrt(previousCard); i <= s; i++) {
     if (previousCard % i === 0) return false;
   }
-  return previousCard > 1;
+  return true;
 }
 
 async function sos(
@@ -152,14 +171,18 @@ async function sos(
   userBloops,
   previousBloops,
 ) {
+  if (user.id != previousBloops[0].User.id || user.id != previousBloops[5].User.id)
+    return false;
+
   const pattern = [true, false, true];
-  for (let i = 0; i < 7; i++)
-    if (
-      user.cardID != previousBloops[0].User.cardId ||
-      (previousBloops[i].User.cardId == previousBloops[i + 1].User.cardId) !=
-        pattern[i % 3]
-    )
+
+  for (let i = 0; i < 7; i++) 
+    if ( (previousBloops[i].User.id == previousBloops[i + 1].User.id) != pattern[i % 3])
       return false;
+
+  let achievementUser = await db.User.findByPk(previousBloops[3].User.id);
+  await achievementUser.addAchievement(23);
+  
   return true;
 }
 
@@ -289,7 +312,8 @@ async function relayRace(
   const thirdLastBloop = userBloops[2];
   if (
     lastBloop.BoxId != secondLastBloop.BoxId &&
-    secondLastBloop.BoxId != thirdLastBloop.BoxId
+    secondLastBloop.BoxId != thirdLastBloop.BoxId &&
+    thirdLastBloop.BoxId != lastBloop.BoxId
   )
     return Date.now() - thirdLastBloop.createdAt < 60000;
   return false;
@@ -335,8 +359,10 @@ async function highNoon(
   const lastBloop = userBloops[0];
 
   return (
+    lastBloop.createdAt.getHours() == 11 &&
+    lastBloop.createdAt.getMinutes() == 59 ||
     lastBloop.createdAt.getHours() == 12 &&
-    lastBloop.createdAt.getMinutes() == 0
+    lastBloop.createdAt.getMinutes() <= 3
   );
 }
 
@@ -437,9 +463,14 @@ async function peopleRikRoll(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 92)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleJez(
@@ -450,9 +481,14 @@ async function peopleJez(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 52)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleSnowcone(
@@ -465,7 +501,7 @@ async function peopleSnowcone(
 ) {
   const lastBloop = previousBloops[0];
 
-  return (lastBloop.User.username == "");
+  return (lastBloop.User.uid == "04a9da6b100289" || lastBloop.User.uid == "045b4365100289");
 }
 
 async function peopleSilver(
@@ -476,9 +512,14 @@ async function peopleSilver(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 27)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleFaith(
@@ -489,9 +530,14 @@ async function peopleFaith(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 51)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleTakk(
@@ -502,9 +548,14 @@ async function peopleTakk(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 86)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleGoh(
@@ -515,9 +566,14 @@ async function peopleGoh(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 300000)
+      break;
+    if (previousBloops[i].User.cardId == 165)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleCrew(
@@ -528,9 +584,14 @@ async function peopleCrew(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  //for (let i = 0; i < lastBloop.length; i++){
+  //  if (Date.now() - previousBloops[i].createdAt > 120000)
+  //    break;
+  //  if (previousBloops[i].User.cardId == 0)
+  //    return true;
+  //}
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleEngineer(
@@ -541,9 +602,14 @@ async function peopleEngineer(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 0)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleFudgy(
@@ -554,9 +620,14 @@ async function peopleFudgy(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 3)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleAzakir(
@@ -567,9 +638,14 @@ async function peopleAzakir(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 19)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleKisumi(
@@ -580,9 +656,14 @@ async function peopleKisumi(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 7)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 async function peopleChairman(
@@ -593,9 +674,14 @@ async function peopleChairman(
   userBloops,
   previousBloops,
 ) {
-  const lastBloop = previousBloops[0];
+  for (let i = 0; i < previousBloops.length; i++){
+    if (Date.now() - previousBloops[i].createdAt > 120000)
+      break;
+    if (previousBloops[i].User.cardId == 24 || previousBloops[i].User.cardId == 163)
+      return true;
+  }
 
-  return (lastBloop.User.username == "");
+  return false;
 }
 
 const checkAchievements = [

@@ -53,9 +53,31 @@ class MyProcessor {
       where: { UserId: user.id },
     });
 
-    if (Date.now() - lastScan < 5000) {
+    if (Date.now() - lastScan < 1500) {
       return new ThrottledUidResult();
     }
+
+    const lastBloops = await db.Bloop.findAll({
+      where: {BoxId: box.id },
+      order: [["createdAt", "DESC"]],
+      limit: 5,
+      include: ["User"],
+    });
+
+    let throttle = true;
+
+    if (lastBloops.length > 3) {
+      for (let i = 0; i < 5; i++) {
+        if (lastBloops[i].User.id != user.id)
+          throttle = false;
+      }
+    } else {
+      throttle = false;
+    }
+
+    if (throttle)
+      return new ThrottledUidResult();
+
 
     const achievements = [];
     await user.createBloop({ BoxId: box.id });
@@ -67,11 +89,10 @@ class MyProcessor {
       order: [["createdAt", "DESC"]],
       limit: 100,
     });
-
     const previousBloops = db.Bloop.findAll({
       where: { id: { [Op.lte]: userBloops[0].id }, BoxId: userBloops[0].BoxId },
       order: [["createdAt", "DESC"]],
-      limit: 10,
+      limit: 100,
       offset: 1,
       include: ["User"],
     });
