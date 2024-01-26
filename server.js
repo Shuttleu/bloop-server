@@ -150,10 +150,10 @@ class MyProcessor {
   async getAudio(id) {
     const hexId = id.toString("hex");
 
-    if (hexId === "0000000000000000000000000000000000000001") {
+    try {
       // Return MP3 audio data.
-      return new AudioFoundResult(Buffer.alloc(50));
-    }
+      return new AudioFoundResult(readFileSync(`audio/${hexId}.mp3`));
+    } catch {}
 
     return new AudioNotFoundResult();
   }
