@@ -20,28 +20,6 @@ async function alphabetically(
   return alphabetical;
 }
 
-async function avidReader(
-  user,
-  boxCount,
-  allBoxes,
-  userBloopCount,
-  userBloops,
-  previousBloops,
-) {
-  return false;
-}
-
-async function hiddenTrail(
-  user,
-  boxCount,
-  allBoxes,
-  userBloopCount,
-  userBloops,
-  previousBloops,
-) {
-  return false;
-}
-
 async function digitSum(
   user,
   boxCount,
@@ -70,17 +48,6 @@ async function digitSum(
     previousId = Math.floor(previousId / 10);
   }
   return lastSum == previousSum;
-}
-
-async function eternalLove(
-  user,
-  boxCount,
-  allBoxes,
-  userBloopCount,
-  userBloops,
-  previousBloops,
-) {
-  return false;
 }
 
 async function fibonacci(
@@ -444,17 +411,6 @@ async function witchingHour(
   return lastBloop.createdAt.getHours() == 0;
 }
 
-async function bugHunter(
-  user,
-  boxCount,
-  allBoxes,
-  userBloopCount,
-  userBloops,
-  previousBloops,
-) {
-  return false;
-}
-
 async function peopleRikRoll(
   user,
   boxCount,
@@ -576,24 +532,6 @@ async function peopleGoh(
   return false;
 }
 
-async function peopleCrew(
-  user,
-  boxCount,
-  allBoxes,
-  userBloopCount,
-  userBloops,
-  previousBloops,
-) {
-  //for (let i = 0; i < lastBloop.length; i++){
-  //  if (Date.now() - previousBloops[i].createdAt > 120000)
-  //    break;
-  //  if (previousBloops[i].User.cardId == 0)
-  //    return true;
-  //}
-
-  return false;
-}
-
 async function peopleEngineer(
   user,
   boxCount,
@@ -709,11 +647,7 @@ const checkAchievements = [
   relayRace,
   sos,
   fibonacci,
-  avidReader,
-  hiddenTrail,
-  eternalLove,
   finalCountdown,
-  bugHunter,
   peopleRikRoll,
   peopleJez,
   peopleSnowcone,
@@ -721,7 +655,6 @@ const checkAchievements = [
   peopleFaith,
   peopleTakk,
   peopleGoh,
-  peopleCrew,
   peopleEngineer,
   peopleFudgy,
   peopleAzakir,
