@@ -315,6 +315,24 @@ async function firstBloopOfTheHour(
   return lastBloop.createdAt.getHours() != previousBloop.createdAt.getHours();
 }
 
+async function highTea(
+  user,
+  boxCount,
+  allBoxes,
+  userBloopCount,
+  userBloops,
+  previousBloops,
+) {
+  const lastBloop = userBloops[0];
+
+  return (
+    lastBloop.createdAt.getHours() == 16 &&
+    lastBloop.createdAt.getMinutes() == 59 ||
+    lastBloop.createdAt.getHours() == 17 &&
+    lastBloop.createdAt.getMinutes() <= 3
+  );
+}
+
 async function highNoon(
   user,
   boxCount,
@@ -543,7 +561,7 @@ async function peopleEngineer(
   for (let i = 0; i < previousBloops.length; i++){
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
-    if (previousBloops[i].User.cardId == 0)
+    if (previousBloops[i].User.cardId == 21)
       return true;
   }
 
@@ -661,6 +679,7 @@ const checkAchievements = [
   peopleKisumi,
   peopleChairman,
   truth,
+  highTea,
 ];
 
 module.exports = checkAchievements;

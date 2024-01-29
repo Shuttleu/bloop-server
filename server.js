@@ -152,7 +152,7 @@ class MyProcessor {
 
     try {
       // Return MP3 audio data.
-      return new AudioFoundResult(readFileSync(`audio/${hexId}.mp3`));
+      return new AudioFoundResult(readFileSync(`achievements/${hexId}.mp3`));
     } catch {}
 
     return new AudioNotFoundResult();

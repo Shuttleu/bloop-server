@@ -346,6 +346,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        name: "High Tea",
+        desc: "Tea Time!!!",
+        points: 2,
+        hidden: true,
+        uuid: "872ded3f-c31a-41cd-89de-d9764df4ccd1",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 
