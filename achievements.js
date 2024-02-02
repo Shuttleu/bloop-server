@@ -59,7 +59,7 @@ async function fibonacci(
   previousBloops,
 ) {
   if (user.id == previousBloops[0].User.id)
-   return false;
+    return false;
   const lastUser = previousBloops[0].User.cardId;
   function isPerfectSquare(x) {
     let s = parseInt(Math.sqrt(x));
@@ -83,14 +83,14 @@ async function finalCountdown(
   if (user.cardId.toString()[0] != "1")
     return false;
 
-  for (let i=7; i >= 0; i--){
-    console.log(`${i+2} = ${previousBloops[i].User.cardId.toString()[0]}`)
-    if (previousBloops[i].User.cardId.toString()[0] != (i+2).toString())
+  for (let i = 7; i >= 0; i--) {
+    console.log(`${i + 2} = ${previousBloops[i].User.cardId.toString()[0]}`)
+    if (previousBloops[i].User.cardId.toString()[0] != (i + 2).toString())
       return false;
   }
 
-  
-  for (let i=7; i >= 0 ; i--){
+
+  for (let i = 7; i >= 0; i--) {
     let achievementUser = await db.User.findByPk(previousBloops[i].User.id);
     await achievementUser.addAchievement(28);
   }
@@ -122,7 +122,7 @@ async function prime(
   previousBloops,
 ) {
   if (user.id == previousBloops[0].User.id)
-   return false;
+    return false;
   const previousCard = previousBloops[0].User.cardId;
   for (let i = 2, s = Math.sqrt(previousCard); i <= s; i++) {
     if (previousCard % i === 0) return false;
@@ -143,13 +143,13 @@ async function sos(
 
   const pattern = [true, false, true];
 
-  for (let i = 0; i < 7; i++) 
-    if ( (previousBloops[i].User.id == previousBloops[i + 1].User.id) != pattern[i % 3])
+  for (let i = 0; i < 7; i++)
+    if ((previousBloops[i].User.id == previousBloops[i + 1].User.id) != pattern[i % 3])
       return false;
 
   let achievementUser = await db.User.findByPk(previousBloops[3].User.id);
   await achievementUser.addAchievement(23);
-  
+
   return true;
 }
 
@@ -395,7 +395,7 @@ async function nightOwl(
   const lastBloop = userBloops[0];
 
   return (
-    lastBloop.createdAt.getHours() > 23 || lastBloop.createdAt.getHours() < 3
+    lastBloop.createdAt.getHours() == 2
   );
 }
 
@@ -437,7 +437,7 @@ async function peopleRikRoll(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 92)
@@ -455,7 +455,7 @@ async function peopleJez(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 52)
@@ -486,7 +486,7 @@ async function peopleSilver(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 27)
@@ -504,7 +504,7 @@ async function peopleFaith(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 51)
@@ -522,7 +522,7 @@ async function peopleTakk(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 86)
@@ -540,7 +540,7 @@ async function peopleGoh(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 300000)
       break;
     if (previousBloops[i].User.cardId == 165)
@@ -558,7 +558,7 @@ async function peopleEngineer(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 21)
@@ -576,7 +576,7 @@ async function peopleFudgy(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 3)
@@ -594,7 +594,7 @@ async function peopleAzakir(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 19)
@@ -612,7 +612,7 @@ async function peopleKisumi(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 7)
@@ -630,7 +630,7 @@ async function peopleChairman(
   userBloops,
   previousBloops,
 ) {
-  for (let i = 0; i < previousBloops.length; i++){
+  for (let i = 0; i < previousBloops.length; i++) {
     if (Date.now() - previousBloops[i].createdAt > 120000)
       break;
     if (previousBloops[i].User.cardId == 24 || previousBloops[i].User.cardId == 163)
