@@ -161,7 +161,7 @@ async function milestone100(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 100;
+  return userBloopCount >= 100;
 }
 
 async function milestone500(
@@ -172,7 +172,7 @@ async function milestone500(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 500;
+  return userBloopCount >= 500;
 }
 
 async function milestone1000(
@@ -183,7 +183,7 @@ async function milestone1000(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 1000;
+  return userBloopCount >= 1000;
 }
 
 async function milestone2000(
@@ -194,7 +194,7 @@ async function milestone2000(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 2000;
+  return userBloopCount >= 2000;
 }
 
 async function milestone3000(
@@ -204,7 +204,7 @@ async function milestone3000(
   userBloops,
   previousBloopser,
 ) {
-  return userBloopCount == 3000;
+  return userBloopCount >= 3000;
 }
 
 async function milestone4000(
@@ -215,7 +215,7 @@ async function milestone4000(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 4000;
+  return userBloopCount >= 4000;
 }
 
 async function milestone5000(
@@ -226,7 +226,7 @@ async function milestone5000(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 5000;
+  return userBloopCount >= 5000;
 }
 
 async function firstBork(
@@ -237,7 +237,7 @@ async function firstBork(
   userBloops,
   previousBloops,
 ) {
-  return userBloopCount == 1;
+  return userBloopCount >= 1;
 }
 
 async function maniac(
