@@ -29,19 +29,28 @@ class MyProcessor {
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
     if (user === null) {
       try {
-        const newUser = await axios.post(
-          process.env.BADGE_API_URL,
-          {
-            access_key: process.env.BADGE_API_KEY,
-            serial_number: hexUid.match(/.{2}/g).join(":"),
-          },
-        );
-        user = await db.User.create({
-          uid: hexUid,
-          username: newUser.data.display_name,
-          cardId: parseInt(newUser.data.badge_id),
-        });
+        if (hexUid == "04a9da6b100289" || hexUid == "045b4365100289") {
+          user = await db.User.create({
+            uid: hexUid,
+            username: "Snowcone",
+            cardId: 0,
+          });
+        } else {
+          const newUser = await axios.post(
+            process.env.BADGE_API_URL,
+            {
+              access_key: process.env.BADGE_API_KEY,
+              serial_number: hexUid.match(/.{2}/g).join(":"),
+            },
+          );
+          user = await db.User.create({
+            uid: hexUid,
+            username: newUser.data.display_name,
+            cardId: parseInt(newUser.data.badge_id),
+          });
+        }
       } catch (error) {
+        console.log(`Unknown uid: ${hexUid}`);
         return new UnknownUidResult();
       }
     }
@@ -54,11 +63,12 @@ class MyProcessor {
     });
 
     if (Date.now() - lastScan < 1500) {
+      console.log(`Scanned too quickly: ${hexUid}`);
       return new ThrottledUidResult();
     }
 
     const lastBloops = await db.Bloop.findAll({
-      where: {BoxId: box.id },
+      where: { BoxId: box.id },
       order: [["createdAt", "DESC"]],
       limit: 5,
       include: ["User"],
@@ -66,21 +76,28 @@ class MyProcessor {
 
     let throttle = true;
 
-    if (lastBloops.length > 3) {
+    if (lastBloops.length == 5) {
       for (let i = 0; i < 5; i++) {
-        if (lastBloops[i].User.id != user.id)
+        if (lastBloops[i].User.id != user.id) {
           throttle = false;
+        }
       }
     } else {
       throttle = false;
     }
 
-    if (throttle)
+    if (throttle) {
+      console.log(`Scanned too many times: ${hexUid}`);
       return new ThrottledUidResult();
+    }
 
 
     const achievements = [];
     await user.createBloop({ BoxId: box.id });
+
+    if (hexUid == "04a9da6b100289" || hexUid == "045b4365100289") {
+      return new ValidUidResult([]);
+    }
 
     const boxCount = db.Box.count();
     const allBoxes = db.Box.findAll({ order: [["name", "DESC"]] });
@@ -118,8 +135,8 @@ class MyProcessor {
       });
 
       return Promise.allSettled(achievements).then(async (results) => {
-        console.log("new_achievements");
-        console.log(results);
+        //console.log("new_achievements");
+        //console.log(results);
         const newAchievements = [];
         const currentAchievements = await user.getAchievements();
         for (const [index, achievement] of results.entries()) {
@@ -127,7 +144,7 @@ class MyProcessor {
           currentAchievements.forEach((existingAchievement) => {
             if (existingAchievement.id == index + 1) gained = true;
           });
-          console.log(gained);
+          //console.log(gained);
           if (!gained && achievement.value) {
             await user.addAchievement(index + 1);
             const new_achievement = await db.Achievement.findByPk(index + 1);
@@ -141,6 +158,7 @@ class MyProcessor {
           results.forEach((result) => {
             achievementsFulfilled.push(uuidBuffer.toBuffer(result.value.uuid));
           });
+          console.log(`Completed bark for: ${hexUid}`);
           return new ValidUidResult(achievementsFulfilled);
         });
       });
@@ -153,7 +171,7 @@ class MyProcessor {
     try {
       // Return MP3 audio data.
       return new AudioFoundResult(readFileSync(`achievements/${hexId}.mp3`));
-    } catch {}
+    } catch { }
 
     return new AudioNotFoundResult();
   }
