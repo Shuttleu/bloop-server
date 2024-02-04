@@ -1,9 +1,10 @@
 FROM node:21
 RUN mkdir /app
 WORKDIR /app
-ADD . .
+ADD package* .
 ENV NODE_ENV=production
 RUN npm install
+ADD . .
 EXPOSE 12345
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
