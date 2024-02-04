@@ -198,7 +198,8 @@ async function milestone2000(
 }
 
 async function milestone3000(
-  usboxCount,
+  user,
+  boxCount,
   allBoxes,
   userBloopCount,
   userBloops,
