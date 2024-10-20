@@ -185,7 +185,7 @@ const { server, closeOpenConnections } = startServer({
     key: readFileSync(`test.key`),
     cert: readFileSync(`test.crt`),
   },
-  port: 12345,
+  port: 12346,
 });
 
 // This takes care of gracefully shutting down the server on CTRL+C
