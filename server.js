@@ -29,7 +29,7 @@ class MyProcessor {
     //user = await db.User.create({uid: hexUid, username: "Shuttleu", cardId: 1});
     if (user === null) {
       try {
-        if (hexUid == "04a9da6b100289" || hexUid == "045b4365100289") {
+        if (hexUid == "0470159a931190" || hexUid == "045b4365100289") {
           user = await db.User.create({
             uid: hexUid,
             username: "Snowcone",
