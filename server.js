@@ -20,6 +20,7 @@ const checkAchievements = require("./achievements.js");
 
 class MyProcessor {
   authenticate(clientId, secret) {
+    console.log(secret);
     return secret === process.env.CLIENT_SECRET;
   }
 
