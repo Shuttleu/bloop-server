@@ -1,0 +1,4 @@
+# .dockerignore
+achievements.js
+achievements/*
+node_modules
